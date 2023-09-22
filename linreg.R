@@ -24,6 +24,10 @@ linreg <- function(formula, data) {
     t_beta_hats <- beta_hats / sqrt(var_beta_hats)
     p_beta_hats <- pt(abs(t_beta_hats), df, lower.tail=FALSE) # NOT CORRECT
     
+    # Change column names for aesthetics
+    colnames(beta_hats) <- c("beta_hat")
+    colnames(y_hat) <- c("y_hat")
+    
     create_linreg <- setRefClass("linreg",
                                  fields=list(beta_hats="matrix",
                                              y_hat="matrix",
@@ -34,24 +38,31 @@ linreg <- function(formula, data) {
                                              t_beta_hats="matrix",
                                              p_beta_hats="matrix"
                                              ),
+                                 methods=list(resid <- function(x) {x$res},
+                                              pred <- function(x) {x$y_hat},
+                                              coef <- function(x) {setNames(as.vector(x$beta_hats), row.names(x$beta_hats))})
                                  )
+    
     create_linreg$methods(show = function(){
       cat("\n",
           "Coefficients \n")
       print(beta_hats[,1])
     })
     
-    plot.create_linreg <- function() {
+    summary.linreg <- function(x) {
+      df_summary <- data.frame(x$beta_hats, sqrt(x$var_beta_hats), x$t_beta_hats, x$p_beta_hats)
+      colnames(df_summary) <- c("Estimate", "Std. Error", "t value", "Pr(>|t|)")
+      print(df_summary)
+      cat("\n",
+          "Residual standard error: ", sqrt(x$res_var), " on ", x$df, " degrees of freedom", sep=""
+          )
+    }
+    
+    plot.linreg <- function() {
       ggplot(aes(x=.self$y_hat, y=.self$res)) |>
         geom_point()
     }
-    
-    
-    residuals.create_linreg <- function(x){
-      x$res
-    }
-    
-    
+
     output_linreg <- create_linreg$new(beta_hats=beta_hats,
                                        y_hat=y_hat,
                                        res=res,
@@ -69,8 +80,5 @@ linreg <- function(formula, data) {
 model <- lm(Sepal.Length ~ Sepal.Width, iris)
 summary(model)
 
-myfunc <- function(data){
-  
-}
+summary(output_linreg)
 
-resid(output_linreg)
