@@ -46,6 +46,12 @@ linreg <- function(formula, data) {
         geom_point()
     }
     
+    
+    residuals.create_linreg <- function(x){
+      x$res
+    }
+    
+    
     output_linreg <- create_linreg$new(beta_hats=beta_hats,
                                        y_hat=y_hat,
                                        res=res,
