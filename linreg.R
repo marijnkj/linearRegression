@@ -1,4 +1,5 @@
 #' Document here
+require(ggplot2)
 
 linreg <- function(formula, data) {
   # linreg class
