@@ -34,6 +34,12 @@ linreg <- function(formula, data) {
                                              p_beta_hats="matrix"
                                              ),
                                  )
+    create_linreg$methods(show = function(){
+      cat("\n",
+          "Coefficients \n")
+      print(beta_hats[,1])
+    })
+    
     output_linreg <- create_linreg$new(beta_hats=beta_hats,
                                        y_hat=y_hat,
                                        res=res,
@@ -43,9 +49,14 @@ linreg <- function(formula, data) {
                                        t_beta_hats=t_beta_hats,
                                        p_beta_hats=p_beta_hats
                                        )
+    
+    
   }
 }
 
 model <- lm(Sepal.Length ~ Sepal.Width, iris)
 summary(model)
 
+myfunc <- function(data){
+  
+}
