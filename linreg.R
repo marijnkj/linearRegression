@@ -41,6 +41,11 @@ linreg <- function(formula, data) {
       print(beta_hats[,1])
     })
     
+    plot.create_linreg <- function() {
+      ggplot(aes(x=.self$y_hat, y=.self$res)) |>
+        geom_point()
+    }
+    
     output_linreg <- create_linreg$new(beta_hats=beta_hats,
                                        y_hat=y_hat,
                                        res=res,
@@ -61,3 +66,5 @@ summary(model)
 myfunc <- function(data){
   
 }
+
+resid(output_linreg)
