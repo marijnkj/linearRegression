@@ -111,7 +111,7 @@ linreg <- function(formula, data) {
                                        formula=formula
                                        )
     
-    
+    return(output_linreg)
   }
 }
 
