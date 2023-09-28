@@ -115,6 +115,7 @@ linreg <- function(formula, data) {
   }
 }
 
+
 model <- lm(Sepal.Length ~ Sepal.Width, iris)
 summary(model)
 

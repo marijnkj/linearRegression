@@ -1,7 +1,7 @@
 #' Document here
 require(ggplot2)
 require(dplyr)
-library(gridExtra)
+require(gridExtra)
 
 linreg <- function(formula, data) {
   # linreg class
@@ -118,5 +118,5 @@ linreg <- function(formula, data) {
 model <- lm(Sepal.Length ~ Sepal.Width, iris)
 summary(model)
 
-plot(output_linreg)
+
 
