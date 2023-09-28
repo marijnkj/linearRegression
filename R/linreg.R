@@ -1,3 +1,12 @@
+# TODO
+# - Fix print and summary function output according to tests
+# - Fix description file
+# - Write documentation and roxygenize
+# - Write vignette
+# - Create theme
+# - Fix github actions
+# - Rename repository
+
 linreg <- setRefClass("linreg",
                       fields=list(formula="formula", 
                                   data="data.frame",
