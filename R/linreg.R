@@ -31,7 +31,7 @@ linreg <- function(formula, data) {
     colnames(y_hat) <- c("y_hat")
     colnames(res) <- c("residuals")
     
-    create_linreg <- setRefClass("linreg",
+    linreg <- setRefClass("linreg",
                                  fields=list(beta_hats="matrix",
                                              y_hat="matrix",
                                              res="matrix",
@@ -47,7 +47,7 @@ linreg <- function(formula, data) {
                                               coef <- function(x) {setNames(as.vector(x$beta_hats), row.names(x$beta_hats))})
                                  )
     
-    create_linreg$methods(show = function(){
+    linreg$methods(show = function(){
       cat("\n",
           "Coefficients \n")
       print(beta_hats[,1])
@@ -100,7 +100,7 @@ linreg <- function(formula, data) {
       grid.arrange(p_fit_res, p_fit_std_res, nrow=2) # http://www.sthda.com/english/wiki/wiki.php?id_contents=7930
     }
 
-    output_linreg <- create_linreg$new(beta_hats=beta_hats,
+    output_linreg <- linreg$new(beta_hats=beta_hats,
                                        y_hat=y_hat,
                                        res=res,
                                        df=df,
