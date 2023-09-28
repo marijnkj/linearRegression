@@ -24,7 +24,7 @@ linreg <- function(formula, data) {
     res_var <- ((t(res) %*% res) / df)[1]
     var_beta_hats <- diag(res_var * solve(t(X) %*% X))
     t_beta_hats <- beta_hats / sqrt(var_beta_hats)
-    p_beta_hats <- pt(abs(t_beta_hats), df, lower.tail=FALSE) # NOT CORRECT
+    p_beta_hats <- pt(abs(t_beta_hats), df, lower.tail=FALSE)*2 # CORRECT
     
     # Change column names for aesthetics
     colnames(beta_hats) <- c("beta_hat")
