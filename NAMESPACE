@@ -1,1 +1,1 @@
-export("linreg", "model")
+export("linreg")
