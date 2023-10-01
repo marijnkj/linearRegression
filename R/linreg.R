@@ -1,10 +1,7 @@
 # TODO
 # - Fix print and summary function output according to tests
-# - Fix description file
-# - Write documentation and roxygenize
 # - Write vignette
 # - Create theme
-# - Fix github actions
 
 #' Linear Regression by OLS
 #' 
