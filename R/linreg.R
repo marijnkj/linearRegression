@@ -5,7 +5,27 @@
 # - Write vignette
 # - Create theme
 # - Fix github actions
-# - Rename repository
+
+#' linreg
+#' @field formula An R formula describing the desired formula for the linear regression
+#' @field data A data.frame containing the necessary data for the linear regression
+#' @field beta_hats A matrix with the estimated coefficients
+#' @field y_hat A matrix with the predicted values for y
+#' @field res A matrix with the residuals
+#' @field df Degrees of freedom
+#' @field res_var Variance of the residuals
+#' @field var_beta_hats Variance of the estimated coefficients
+#' @field t_beta_hats A matrix of t-values for the estimated coefficients
+#' @field p_beta_hats A matrix of p-values for the estimated coefficients (t-test)
+#' 
+#' @importFrom ggplot2 ggplot geom_point geom_line aes ggtitle ylab xlab theme_classic theme
+#' @importFrom dplyr group_by summarise
+#' @importFrom gridExtra grid.arrange
+#' 
+# #' @method initialize Takes input for formula and data, calculates OLS regression and stores the values to the rest of the fields
+# #' @method resid Returns the residuals
+# #' @method pred Returns the predicted y-values
+# #' @method coef Returns the estimated coefficients
 
 linreg <- setRefClass("linreg",
                       fields=list(formula="formula", 
@@ -69,10 +89,6 @@ linreg$methods(summary = function() {
 })
 
 linreg$methods(plot = function() {
-  require(ggplot2)
-  require(dplyr)
-  require(gridExtra)
-  
   df_fit_res <- as.data.frame(cbind(.self$y_hat, .self$res))
   df_fit_res |>
     group_by(by=y_hat) |>
@@ -90,19 +106,19 @@ linreg$methods(plot = function() {
     theme(plot.title=element_text(hjust=0.5)) # https://stackoverflow.com/questions/40675778/center-plot-title-in-ggplot2
   
   df_fit_res <- df_fit_res |>
-    mutate(res_std=(residuals-min(residuals))/(max(residuals)-min(residuals))) |>
-    mutate(sqrt_res_std=sqrt(res_std))
+    mutate(res_std=scale(residuals)) |>
+    mutate(sqrt_abs_res_std=sqrt(abs(res_std)))
   
   df_fit_res |>
     group_by(by=y_hat) |>
-    summarise(median=median(sqrt_res_std)) -> df_medians2
+    summarise(median=median(sqrt_abs_res_std)) -> df_medians2
   
   p_fit_std_res <- df_fit_res |>
     ggplot() +
-    geom_point(aes(x=y_hat, y=sqrt_res_std), shape=1) +
+    geom_point(aes(x=y_hat, y=sqrt_abs_res_std), shape=1) +
     geom_line(data=df_medians2, aes(x=by, y=median), color="red") +
     ggtitle("Scale-Location") +
-    ylab(expression(sqrt("Standardized residuals"))) + # https://stackoverflow.com/questions/12790253/how-to-make-the-square-root-symbol-in-axes-labels
+    ylab(expression(sqrt(abs("Standardized residuals")))) + # https://stackoverflow.com/questions/12790253/how-to-make-the-square-root-symbol-in-axes-labels
     xlab(paste("Fitted values\n", paste(as.character(.self$formula)[c(2, 1, 3)], collapse=" "))) +
     theme_classic() +
     theme(plot.title=element_text(hjust=0.5))
