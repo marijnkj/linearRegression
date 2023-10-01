@@ -11,6 +11,9 @@ Description: This package provides a linreg class that, upon inputting a formula
 License: MIT + file LICENSE
 Imports: dplyr, ggplot2, gridExtra
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 RoxygenNote: 7.2.3
+VignetteBuilder: knitr

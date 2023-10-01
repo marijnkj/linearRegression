@@ -6,7 +6,13 @@
 # - Create theme
 # - Fix github actions
 
-#' linreg
+#' Linear Regression by OLS
+#' 
+#' The linreg class runs a linear regression by OLS on a given formula and dataset. 
+#' Important fields such as residuals, predicted values and estimated coefficients 
+#' can be accessed by calling their respective methods. Additionally, a summary of 
+#' the model can be printed along with some basic plots. 
+#' 
 #' @field formula An R formula describing the desired formula for the linear regression
 #' @field data A data.frame containing the necessary data for the linear regression
 #' @field beta_hats A matrix with the estimated coefficients

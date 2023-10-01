@@ -4,9 +4,12 @@
 \name{linreg-class}
 \alias{linreg-class}
 \alias{linreg}
-\title{linreg}
+\title{Linear Regression by OLS}
 \description{
-linreg
+The linreg class runs a linear regression by OLS on a given formula and dataset. 
+Important fields such as residuals, predicted values and estimated coefficients 
+can be accessed by calling their respective methods. Additionally, a summary of 
+the model can be printed along with some basic plots.
 }
 \section{Fields}{
 
