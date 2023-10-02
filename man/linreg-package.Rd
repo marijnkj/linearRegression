@@ -26,7 +26,7 @@ Maintainer: \packageMaintainer{linreg}
 }
 \examples{
 data(iris)
-linreg_mod <- linreg(formula=Petal.Length ~ Species, data=iris)
+linreg_mod <- linreg$new(formula=Petal.Length ~ Species, data=iris)
 
 # Print coefficients
 linreg_mod$print()

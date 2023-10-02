@@ -3,7 +3,6 @@
 \docType{class}
 \name{linreg-class}
 \alias{linreg-class}
-\alias{linreg}
 \title{Linear Regression by OLS}
 \description{
 The linreg class runs a linear regression by OLS on a given formula and dataset. 
