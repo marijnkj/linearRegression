@@ -37,8 +37,8 @@ the model can be printed along with some basic plots.
 
 
 \examples{
-# data(iris)
-# linreg_mod <- linreg$new(formula=Petal.Length ~ Species, data=iris)
+data(iris)
+linreg_mod <- linreg$new(formula=Petal.Length ~ Species, data=iris)
 
 # Print coefficients
 linreg_mod$print()
