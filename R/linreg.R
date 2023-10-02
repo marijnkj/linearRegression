@@ -26,7 +26,7 @@
 #' @importFrom dplyr group_by summarise mutate
 #' @importFrom gridExtra grid.arrange
 #' @importFrom methods new
-#' 
+#' @export linreg
 # #' @examples
 # #' data(iris)
 # #' linreg_mod <- linreg$new(formula=Petal.Length ~ Species, data=iris)
@@ -163,9 +163,43 @@ linreg$methods(plot = function() {
     theme(plot.title=element_text(hjust=0.5))
   
   grid.arrange(p_fit_res, p_fit_std_res, nrow=2) # http://www.sthda.com/english/wiki/wiki.php?id_contents=7930
+
+  ### THEMES ###
+  theme_liu <- function() {
+    title_font <- "Korolev" # URWGothic
+    text_font <- "Georgia"
+    
+    theme_minimal() %+replace%
+    theme(
+      panel.grid.major=element_blank(),
+      panel.grid.minor=element_blank(),
+      axis.tiks=element_blank(),
+      plot.title=element_text(
+        family=title_font,
+        size=20,
+        face="bold",
+        hjust=0,
+        vjust=2),
+      plot.subtitle=element_text(
+        family=title_font,
+        size=14),
+      plot.caption=element_text(
+        family=text_font,
+        size=9,
+        hjust=1),
+      axis.title=element_text(
+        family=title_font,
+        size=10),
+      axis.text=element_text(
+        family=text_font,
+        size=9),
+      axis.text.x=element_text(margin=margin(5, b=10))
+    )
+  }
 })
 
-# linreg_mod <- linreg(formula=formula, data=data)
+data(iris)
+# linreg_mod <- linreg(formula=Petal.Length ~ Species, data=iris)
 # linreg_mod$summary()
 # linreg_mod$print()
-# linreg_mod$plot()
+# linreg_mod$plot(theme=theme_liu)
