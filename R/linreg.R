@@ -26,8 +26,8 @@
 #' @importFrom gridExtra grid.arrange
 #' 
 #' @examples
-#' # data(iris)
-#' # linreg_mod <- linreg$new(formula=Petal.Length ~ Species, data=iris)
+#' data(iris)
+#' linreg_mod <- linreg$new(formula=Petal.Length ~ Species, data=iris)
 #'
 #' # Print coefficients
 #' linreg_mod$print()
