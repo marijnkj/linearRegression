@@ -127,22 +127,65 @@ linreg$methods(summary = function() {
   )
 })
 
-linreg$methods(plot = function() {
+linreg$methods(plot = function(theme="liu") {
+  # Add LiU logo and fonts?
+  ### THEMES ###
+  theme_liu <- function() {
+    # Not messing with fonts as it is system dependent
+    theme_classic() %+replace%
+      theme(
+        plot.background=element_rect(
+          fill="#f3f3f1",
+          color="#f3f3f1"),
+        panel.border=element_rect(
+          fill=NA
+        ),
+        axis.ticks=element_blank(),
+        plot.title=element_text(
+          # color="white",
+          size=20,
+          face="bold",
+          hjust=0,
+          vjust=2),
+        axis.title=element_text(
+          # color="white",
+          size=10),
+        axis.text=element_text(
+          # color="white",
+          size=9),
+        axis.text.x=element_text(margin=margin(5, b=10))
+      )
+  }
+  
+  ### PLOTTING ###
   df_fit_res <- as.data.frame(cbind(.self$y_hat, .self$res))
   df_fit_res |>
     group_by(by=y_hat) |>
     summarise(median=median(residuals)) -> df_medians1
-  
+  if (theme != "liu") {
+    color = "red"
+  }
+  else {
+    color = "#02b3e5"
+  }
   p_fit_res <- df_fit_res |>
     ggplot() +
     geom_point(aes(x=y_hat, y=residuals), shape=1) + # http://www.sthda.com/english/wiki/ggplot2-point-shapes
-    geom_line(data=df_medians1, aes(x=by, y=median), color="red") + # https://stackoverflow.com/questions/9109156/ggplot-combining-two-plots-from-different-data-frames
+    geom_line(data=df_medians1, aes(x=by, y=median), color=color) + # https://stackoverflow.com/questions/9109156/ggplot-combining-two-plots-from-different-data-frames
     # http://www.sthda.com/english/wiki/ggplot2-title-main-axis-and-legend-titles
     ggtitle("Residuals vs Fitted") +
     ylab("Residuals") +
-    xlab(paste("Fitted values\n", paste(as.character(.self$formula)[c(2, 1, 3)], collapse=" "))) + # https://stackoverflow.com/questions/5951500/is-it-possible-to-make-print-formula-respect-the-environment-width-option
-    theme_classic() + # http://www.sthda.com/english/wiki/ggplot2-themes-and-background-colors-the-3-elements
-    theme(plot.title=element_text(hjust=0.5)) # https://stackoverflow.com/questions/40675778/center-plot-title-in-ggplot2
+    xlab(paste("Fitted values\n", paste(as.character(.self$formula)[c(2, 1, 3)], collapse=" "))) # https://stackoverflow.com/questions/5951500/is-it-possible-to-make-print-formula-respect-the-environment-width-option
+    
+  if (theme != "liu") {
+    p_fit_res <- p_fit_res +  
+      theme_classic() + # http://www.sthda.com/english/wiki/ggplot2-themes-and-background-colors-the-3-elements
+      theme(plot.title=element_text(hjust=0.5)) # https://stackoverflow.com/questions/40675778/center-plot-title-in-ggplot2
+  }
+  else {
+    p_fit_res <- p_fit_res +
+      theme_liu()
+  }
   
   df_fit_res <- df_fit_res |>
     mutate(res_std=scale(residuals)) |>
@@ -155,51 +198,27 @@ linreg$methods(plot = function() {
   p_fit_std_res <- df_fit_res |>
     ggplot() +
     geom_point(aes(x=y_hat, y=sqrt_abs_res_std), shape=1) +
-    geom_line(data=df_medians2, aes(x=by, y=median), color="red") +
+    geom_line(data=df_medians2, aes(x=by, y=median), color=color) +
+    # text(x=y_hat, y=sqrt_abs_res_std, labels=rownames(.data)) +
     ggtitle("Scale-Location") +
     ylab(expression(sqrt(abs("Standardized residuals")))) + # https://stackoverflow.com/questions/12790253/how-to-make-the-square-root-symbol-in-axes-labels
-    xlab(paste("Fitted values\n", paste(as.character(.self$formula)[c(2, 1, 3)], collapse=" "))) +
-    theme_classic() +
-    theme(plot.title=element_text(hjust=0.5))
+    xlab(paste("Fitted values\n", paste(as.character(.self$formula)[c(2, 1, 3)], collapse=" ")))
+    
+  if (theme != "liu") {
+    p_fit_std_res <- p_fit_std_res +
+      theme_classic() +
+      theme(plot.title=element_text(hjust=0.5))
+  }
+  else {
+    p_fit_std_res <- p_fit_std_res +
+      theme_liu()
+  }
   
   grid.arrange(p_fit_res, p_fit_std_res, nrow=2) # http://www.sthda.com/english/wiki/wiki.php?id_contents=7930
-
-  ### THEMES ###
-  theme_liu <- function() {
-    title_font <- "Korolev" # URWGothic
-    text_font <- "Georgia"
-    
-    theme_minimal() %+replace%
-    theme(
-      panel.grid.major=element_blank(),
-      panel.grid.minor=element_blank(),
-      axis.tiks=element_blank(),
-      plot.title=element_text(
-        family=title_font,
-        size=20,
-        face="bold",
-        hjust=0,
-        vjust=2),
-      plot.subtitle=element_text(
-        family=title_font,
-        size=14),
-      plot.caption=element_text(
-        family=text_font,
-        size=9,
-        hjust=1),
-      axis.title=element_text(
-        family=title_font,
-        size=10),
-      axis.text=element_text(
-        family=text_font,
-        size=9),
-      axis.text.x=element_text(margin=margin(5, b=10))
-    )
-  }
 })
 
-data(iris)
-# linreg_mod <- linreg(formula=Petal.Length ~ Species, data=iris)
+# data(iris)
+linreg_mod <- linreg(formula=Petal.Length ~ Species, data=iris)
 # linreg_mod$summary()
 # linreg_mod$print()
-# linreg_mod$plot(theme=theme_liu)
+linreg_mod$plot()
