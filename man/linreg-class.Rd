@@ -33,6 +33,10 @@ the model can be printed along with some basic plots.
 \item{\code{t_beta_hats}}{A matrix of t-values for the estimated coefficients}
 
 \item{\code{p_beta_hats}}{A matrix of p-values for the estimated coefficients (t-test)}
+
+\item{\code{formula_call}}{The formula as used in the object initialization}
+
+\item{\code{data_call}}{The data as used in the object initialization}
 }}
 
 

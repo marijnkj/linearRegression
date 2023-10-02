@@ -1,26 +1,23 @@
-\name{linreg-package}
-\alias{linreg-package}
-\alias{linreg}
+\name{linearRegression-package}
+\alias{linearRegression-package}
+\alias{linearRegression}
 \docType{package}
 \title{
-\packageTitle{linreg}
+\packageTitle{linearRegression}
 }
 \description{
-\packageDescription{linreg}
+\packageDescription{linearRegression}
 }
 \details{
 
 The DESCRIPTION file:
-\packageDESCRIPTION{linreg}
-\packageIndices{linreg}
+\packageDESCRIPTION{linearRegression}
+\packageIndices{linearRegression}
 The linreg class provided by this package runs a linear regression by OLS on a given formula and dataset. Important fields such as residuals, predicted values and estimated coefficients can be accessed by calling their respective methods. Additionally, a summary of the model can be printed along with some basic plots. 
 }
 \author{
-\packageAuthor{linreg}
+\packageAuthor{linearRegression}
 
-Maintainer: \packageMaintainer{linreg}
+Maintainer: \packageMaintainer{linearRegression}
 }
 \keyword{package, OLS}
-\seealso{
-\code{\link[<linreg>:<linreg>-package]{<linreg>}}
-}

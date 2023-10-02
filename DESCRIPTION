@@ -1,4 +1,4 @@
-Package: linreg
+Package: linearRegression
 Encoding: UTF-8
 Type: Package
 Title: Calculate OLS
@@ -8,7 +8,7 @@ Authors@R: c(person("Max", "Björklund", email="maxbj107@student.liu.se", role=c
           person("Marijn", "Jaarsma", email="marja987@student.liu.se", role=c("aut")))
 Description: This package provides a linreg class that, upon inputting a formula and dataset, allows the user to run a linear regression and access some of the calculated properties such as coefficients and residuals, and quickly access some basic plots.
 License: MIT + file LICENSE
-Imports: dplyr, ggplot2, gridExtra
+Imports: dplyr, ggplot2, gridExtra, methods
 Suggests: 
     knitr,
     rmarkdown,

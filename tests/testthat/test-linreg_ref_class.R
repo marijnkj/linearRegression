@@ -1,4 +1,4 @@
-context("linreg")
+context("linearRegression")
 
 data("iris")
 

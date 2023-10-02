@@ -1,5 +1,4 @@
 # TODO
-# - Fix print and summary function output according to tests
 # - Write vignette
 # - Create theme
 
@@ -20,10 +19,13 @@
 #' @field var_beta_hats Variance of the estimated coefficients
 #' @field t_beta_hats A matrix of t-values for the estimated coefficients
 #' @field p_beta_hats A matrix of p-values for the estimated coefficients (t-test)
+#' @field formula_call The formula as used in the object initialization
+#' @field data_call The data as used in the object initialization
 #' 
 #' @importFrom ggplot2 ggplot geom_point geom_line aes ggtitle ylab xlab theme_classic theme
 #' @importFrom dplyr group_by summarise mutate
 #' @importFrom gridExtra grid.arrange
+#' @importFrom methods new
 #' 
 # #' @examples
 # #' data(iris)
