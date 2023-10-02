@@ -1,5 +1,5 @@
 ---
-title: "my-vignette"
+title: "Get started with linearRegression"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{my-vignette}
@@ -14,6 +14,100 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Introduction
+
+linearPackage introduces a way of solving (multiple) linear regression on either numerical data, categorical data, or a combination of them. The Iris dataset categorical data of three different species of iris flowers, along with numerical data of the width and length of their petals and sepals.
+
 ```{r setup}
-library(linreg)
+
+data("iris")
+```
+
+## Using the function
+
+The function could be called directly from the package linearRegression, or from your environment once you attached the package to your active library.
+
+In the example below, we doing a linear regression on the iris data, where Sepal.Length is established as our response variable in the formula argument. " Sepal.Length \~ . " means that the regression is supposed to be done on all other variables in the dataset as explanatory variables.
+
+The regression is made and saved in your environment under whichever name you choose, here as "myModel".
+
+```{r}
+
+myModel <- 
+  linearRegression::linreg(formula = Sepal.Length ~ . ,data =  iris)
+
+# alternatively
+
+library(linearRegression)
+
+myModel <- linreg(formula = Sepal.Length ~ . ,data = iris)
+```
+
+### Choosing explanatory variables
+
+In the last example, we established the length of the iris sepals (Sepal.Length) as the variable that we want to explain through our regression. We could try to use the width (Sepal.Width) of the sepals as an explanatory variable.
+
+```{r}
+
+myFormula <- Sepal.Length ~ Sepal.Width
+
+linreg(formula = myFormula, data = iris)
+```
+
+#### Adding categorical variables
+
+As our last model only explains the **average** iris flowers sepal length through its sepal width, we now also want to take the iris species into account.
+
+Species is therefore a categorical variable, which are stored in data frames wither in factor-class or character-class.
+
+```{r}
+
+class(iris$Species)
+levels(iris$Species)
+
+myFormula <- Sepal.Length ~ Sepal.Width + Species
+
+
+linreg(formula = myFormula, data = iris)
+
+```
+
+#### Transforming variables
+
+In some more advanced cases of multiple regression, we could want to use polynomials or other functions to transform our variables.
+
+In the example below, we will tranform our Sepal.Width variable into a second degree polynomial, as well as adding the natural logarithm of petal length (Petal.Length).
+
+Although this could be done through calculating these transformed variables seperately, and then adding them to our dataset - It could as well be done in the formula directly using the I() function which tells the formula to read the argument as a transformation rather than a variable name.:
+
+```{r}
+
+
+myFormula <- Sepal.Length ~ Sepal.Width + I(Sepal.Width^2) + I(log(Petal.Width)) + Species
+
+
+linreg(formula = myFormula, data = iris)
+
+```
+
+#### Adding interaction terms
+
+Lastly, we could also add interaction terms between the variables. If we want to add the width of the petals (Petal.Width), as we suspect there being a significantly different relation between our response variable and the petal width depending on the species. An interaction term could be added alongside the variable. This is done through adding a ":" between the variables of which you suspect interaction.
+
+```{r}
+
+
+myFormula <- Sepal.Length ~ Sepal.Width + I(Sepal.Width^2) + I(log(Petal.Width)) + Petal.Width + Species + Petal.Width:Species
+
+
+myModel <- linreg(formula = myFormula, data = iris)
+
+myModel
+```
+
+### Evaluating your model
+
+```{r}
+summary(myModel)
+
 ```
