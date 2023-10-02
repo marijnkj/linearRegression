@@ -24,25 +24,3 @@ Maintainer: \packageMaintainer{linreg}
 \seealso{
 \code{\link[<linreg>:<linreg>-package]{<linreg>}}
 }
-\examples{
-data(iris)
-linreg_mod <- linreg$new(formula=Petal.Length ~ Species, data=iris)
-
-# Print coefficients
-linreg_mod$print()
-
-# Print summary of linear regression
-linreg_mod$summary()
-
-# Plot some basic graphs
-linreg_mod$plot()
-
-# Get residuals
-linreg_mod$resid()
-
-# Get y-hat values
-linreg_mod$pred()
-
-# Get coefficients
-linreg_mod$coef()
-}
