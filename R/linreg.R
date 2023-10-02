@@ -22,7 +22,7 @@
 #' @field p_beta_hats A matrix of p-values for the estimated coefficients (t-test)
 #' 
 #' @importFrom ggplot2 ggplot geom_point geom_line aes ggtitle ylab xlab theme_classic theme
-#' @importFrom dplyr group_by summarise
+#' @importFrom dplyr group_by summarise mutate
 #' @importFrom gridExtra grid.arrange
 #' 
 # #' @method initialize Takes input for formula and data, calculates OLS regression and stores the values to the rest of the fields
@@ -40,11 +40,15 @@ linreg <- setRefClass("linreg",
                                   res_var="numeric",
                                   var_beta_hats="numeric",
                                   t_beta_hats="matrix",
-                                  p_beta_hats="matrix"
+                                  p_beta_hats="matrix",
+                                  formula_call="character",
+                                  data_call="character"
                                   ),
                       methods=list(initialize=function(formula, data) {
                         .self$formula <<- formula
                         .self$data <<- data
+                        .self$formula_call <<- deparse(substitute(formula))
+                        .self$data_call <<- deparse(substitute(data))
                         
                         X <- model.matrix(formula, data) # https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/model.matrix
                         y <- as.matrix(data[all.vars(formula)[1]])
@@ -71,21 +75,29 @@ linreg <- setRefClass("linreg",
 )
 
 linreg$methods(show = function(){
-  cat("\n",
-      "Coefficients \n")
-  base::print(beta_hats[,1])
+  coef <- t(.self$beta_hats)
+  dimnames(coef)[[1]] <- "" # https://github.com/SurajGupta/r-source/blob/master/src/library/base/R/dataframe.R
+  
+  cat("\nCall:\nlinreg(formula = ", .self$formula_call, ", data = ", .self$data_call, ")\n\n", 
+      "Coefficients:\n", sep="")
+  print.default(coef, print.gap=2L, quote=FALSE, right=TRUE) # https://github.com/SurajGupta/r-source/blob/master/src/library/stats/R/lm.R#L116
 })
 
 linreg$methods(print = function(){
-  cat("\n",
-      "Coefficients \n")
-  base::print(.self$beta_hats[,1])
+  coef <- t(.self$beta_hats)
+  dimnames(coef)[[1]] <- "" # https://github.com/SurajGupta/r-source/blob/master/src/library/base/R/dataframe.R
+  
+  cat("\nCall:\nlinreg(formula = ", .self$formula_call, ", data = ", .self$data_call, ")\n\n", 
+      "Coefficients:\n", sep="")
+  print.default(coef, print.gap=2L, quote=FALSE, right=TRUE) # https://github.com/SurajGupta/r-source/blob/master/src/library/stats/R/lm.R#L116
 })
 
 linreg$methods(summary = function() {
   df_summary <- data.frame(.self$beta_hats, sqrt(.self$var_beta_hats), .self$t_beta_hats, .self$p_beta_hats)
-  colnames(df_summary) <- c("Estimate", "Std. Error", "t value", "Pr(>|t|)")
-  base::print(df_summary)
+  df_summary <- df_summary %>% mutate(" "=ifelse(.[[4]] < 0.001, "***", ifelse(.[[4]] < 0.01, "**", ifelse(.[[4]] < 0.05, "*", ifelse(.[[4]] < 0.1, ".", "")))))
+  colnames(df_summary) <- c("Estimate", "Std. Error", "t value", "Pr(>|t|)", " ")
+  
+  print.default(as.matrix(df_summary), print.gap=2L, quote=FALSE, right=TRUE)
   cat("\n",
       "Residual standard error: ", sqrt(.self$res_var), " on ", .self$df, " degrees of freedom", sep=""
   )
@@ -130,6 +142,6 @@ linreg$methods(plot = function() {
 })
 
 # linreg_mod <- linreg(formula=formula, data=data)
-# linreg_mod$X
+# linreg_mod$summary()
 # linreg_mod$print()
 # linreg_mod$plot()
