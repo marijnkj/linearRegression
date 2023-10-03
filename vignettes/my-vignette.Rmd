@@ -120,3 +120,103 @@ Using the function summary() at our model-object gives us following output: A ta
 plot(myModel)
 
 ```
+
+Although the majority of residual analysis must be done manually, the function supplies two plots accessed easiest through the print()-function. This provides two graphs where the resduals are plotted after fitted value along the x-axis. A red line is drawn through the median residual of every fitted value, in case one fitted value corresponds with different residuals. The first (upper) plot shows the residuals (how much the fitted values differs from data input) on y-axis. The second (lower) plot shows the square root of the standardized residuals on y-axis.
+
+### Linreg as a class object
+
+```{r}
+## linreg$new(formula, data) == linreg(formula, data)
+
+myModel <- linreg$new(formula, data)
+
+class(linreg)
+class(myModel)
+```
+
+The function which calculates the regression is contained in an object generator which creates and object of class "linreg". In the creation of a new "linreg", the input is used on the function. Not only are the basic results printed at the creation of the object, they are also saved inside the object to be accessed later at command.
+
+#### Methods and fields
+
+```{r}
+
+#beta coefficients
+myModel$beta_hats
+
+#10 first residuals, accessed through resid()
+head(resid(myModel), 10)
+
+
+
+```
+
+##### Methods
+
+-   Print coefficients -\> linreg_mod\$print()
+
+-   Print summary of linear regression -\> linreg_mod\$summary()
+
+-   Plot some basic graphs -\> linreg_mod\$plot()
+
+-   Get residuals -\> linreg_mod\$resid()
+
+-   Get y-hat values -\> linreg_mod\$pred()
+
+-   Get coefficients -\> linreg_mod\$coef()
+
+##### Fields
+
+-   formula = An R formula describing the desired formula for the linear regression
+
+-   data = A data.frame containing the necessary data for the linear regression
+
+-   beta_hat = A matrix with the estimated coefficients
+
+-   y_hat = A matrix with the predicted values for y
+
+-   res = A matrix with the residuals
+
+-   df = Degrees of freedom
+
+-   res_var = Variance of the residuals
+
+-   var_beta_hats = Variance of the estimated coefficients
+
+-   t_beta_hats = A matrix of t-values for the estimated coefficients
+
+-   p_beta_hats = A matrix of p-values for the estimated coefficients (t-test)
+
+-   formula_call = The formula as used in the object initialization
+
+-   data_call = The data as used in the object initialization
+
+### How does it work?
+
+Linreg utilizes ordinary least squares-method to calculate regression coefficients through matrix algebra.
+
+```{r}
+                        formula <- formula
+                        data <- data
+                        formula_call <- deparse(substitute(formula))
+                        data_call <- deparse(substitute(data))
+                        
+                        X <- model.matrix(formula, data) # https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/model.matrix
+                        y <- as.matrix(data[all.vars(formula)[1]])
+                        
+                        beta_hats <- solve(t(X) %*% X) %*% t(X) %*% y
+                        y_hat <- X %*% beta_hats
+                        res <- y - y_hat
+                        df <- length(y) - length(beta_hats)
+                        res_var <- ((t(res) %*% res) / df)[1] # [1] to access the value
+                        var_beta_hats <- diag(res_var * solve(t(X) %*% X))
+                        t_beta_hats <- beta_hats / sqrt(var_beta_hats)
+                        p_beta_hats <- pt(abs(t_beta_hats), df, lower.tail=FALSE)*2 # x2 for two-tailed p-values
+```
+
+### Custom theme: LiU
+
+```{r}
+# Plot the residuals with a theme matching the graphic profile of Linköpings University!
+
+myModel$plot(theme = "liu")
+```
