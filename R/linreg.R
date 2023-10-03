@@ -22,10 +22,11 @@
 #' @field formula_call The formula as used in the object initialization
 #' @field data_call The data as used in the object initialization
 #' 
-#' @importFrom ggplot2 ggplot geom_point geom_line aes ggtitle ylab xlab theme_classic theme
+#' @importFrom ggplot2 ggplot geom_point geom_line aes ggtitle ylab xlab theme_classic theme element_text margin element_blank element_rect
 #' @importFrom dplyr group_by summarise mutate
 #' @importFrom gridExtra grid.arrange
 #' @importFrom methods new
+#' @importFrom patchwork inset_element
 # #' @importFrom magick image_read
 # #' @importFrom patchwork inset_element
 #' @export linreg
@@ -134,7 +135,7 @@ linreg$methods(plot = function(theme="liu") {
   ### THEMES ###
   theme_liu <- function() {
     # Not messing with fonts as it is system dependent
-    theme_classic() %+replace%
+    #theme_classic() %+replace%
     theme(
       plot.background=element_rect(
         fill="#02b3e5",
@@ -212,8 +213,8 @@ linreg$methods(plot = function(theme="liu") {
   }
   else {
     p_fit_std_res <- p_fit_std_res +
-      theme_liu() +
-      inset_element(p=liu_logo, left=-0.5, right=-0.05, top=-0.05, bottom=-0.2)
+      theme_liu()
+      #inset_element(p=liu_logo, left=-0.5, right=-0.05, top=-0.05, bottom=-0.2)
   }
   
   grid.arrange(p_fit_res, p_fit_std_res, nrow=2) # http://www.sthda.com/english/wiki/wiki.php?id_contents=7930
