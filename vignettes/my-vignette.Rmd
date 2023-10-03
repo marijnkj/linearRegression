@@ -111,3 +111,12 @@ myModel
 summary(myModel)
 
 ```
+
+Using the function summary() at our model-object gives us following output: A table is printed containing the beta-coefficient estimates for every explanatory variable supplied in the input formula, along with its standard errors. A t-value for each explanatory variable estimate is included in the output, which is used to calculate the p-value (Pr(\>\|t\|)) for double sided t-test. Often p \< 0.05 indicates statistically significant effect.
+
+#### Residual analysis
+
+```{r}
+plot(myModel)
+
+```
