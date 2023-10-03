@@ -26,8 +26,8 @@
 #' @importFrom dplyr group_by summarise mutate
 #' @importFrom gridExtra grid.arrange
 #' @importFrom methods new
-#' @importFrom magick image_read
-#' @importFrom patchwork inset_element
+# #' @importFrom magick image_read
+# #' @importFrom patchwork inset_element
 #' @export linreg
 # #' @examples
 # #' data(iris)
