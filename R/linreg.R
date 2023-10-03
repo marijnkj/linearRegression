@@ -26,6 +26,8 @@
 #' @importFrom dplyr group_by summarise mutate
 #' @importFrom gridExtra grid.arrange
 #' @importFrom methods new
+#' @importFrom magick image_read
+#' @importFrom patchwork inset_element
 #' @export linreg
 # #' @examples
 # #' data(iris)
@@ -133,41 +135,39 @@ linreg$methods(plot = function(theme="liu") {
   theme_liu <- function() {
     # Not messing with fonts as it is system dependent
     theme_classic() %+replace%
-      theme(
-        plot.background=element_rect(
-          fill="#f3f3f1",
-          color="#f3f3f1"),
-        panel.border=element_rect(
-          fill=NA
-        ),
-        axis.ticks=element_blank(),
-        plot.title=element_text(
-          # color="white",
-          size=20,
-          face="bold",
-          hjust=0,
-          vjust=2),
-        axis.title=element_text(
-          # color="white",
-          size=10),
-        axis.text=element_text(
-          # color="white",
-          size=9),
-        axis.text.x=element_text(margin=margin(5, b=10))
-      )
+    theme(
+      plot.background=element_rect(
+        fill="#02b3e5",
+        color="#02b3e5"),
+      panel.border=element_rect(
+        fill=NA
+      ),
+      axis.ticks=element_blank(),
+      plot.title=element_text(
+        color="white",
+        size=20,
+        face="bold",
+        hjust=0,
+        vjust=2),
+      axis.title=element_text(
+        # color="white",
+        size=10),
+      axis.text=element_text(
+        # color="white",
+        size=9),
+      axis.text.x=element_text(margin=margin(5, b=10))
+    )
   }
   
   ### PLOTTING ###
+  # liu_logo <- magick::image_read(system.file("LiU-primary-black.png", package="linearRegression")) # https://stackoverflow.com/questions/54993463/include-image-in-r-packages
+  
   df_fit_res <- as.data.frame(cbind(.self$y_hat, .self$res))
   df_fit_res |>
     group_by(by=y_hat) |>
     summarise(median=median(residuals)) -> df_medians1
-  if (theme != "liu") {
-    color = "red"
-  }
-  else {
-    color = "#02b3e5"
-  }
+
+  color = "red"
   p_fit_res <- df_fit_res |>
     ggplot() +
     geom_point(aes(x=y_hat, y=residuals), shape=1) + # http://www.sthda.com/english/wiki/ggplot2-point-shapes
@@ -184,7 +184,8 @@ linreg$methods(plot = function(theme="liu") {
   }
   else {
     p_fit_res <- p_fit_res +
-      theme_liu()
+      theme_liu() # +
+      # inset_element(p=liu_logo, left=0.05, right=0.5, top=0.95, bottom=0.65)
   }
   
   df_fit_res <- df_fit_res |>
@@ -211,13 +212,14 @@ linreg$methods(plot = function(theme="liu") {
   }
   else {
     p_fit_std_res <- p_fit_std_res +
-      theme_liu()
+      theme_liu() +
+      inset_element(p=liu_logo, left=-0.5, right=-0.05, top=-0.05, bottom=-0.2)
   }
   
   grid.arrange(p_fit_res, p_fit_std_res, nrow=2) # http://www.sthda.com/english/wiki/wiki.php?id_contents=7930
 })
 
-# data(iris)
+data(iris)
 linreg_mod <- linreg(formula=Petal.Length ~ Species, data=iris)
 # linreg_mod$summary()
 # linreg_mod$print()
