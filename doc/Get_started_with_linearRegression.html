@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Get_started_with_linearRegression</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Get_started_with_linearRegression</h1>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>linearPackage introduces a way of solving (multiple) linear
+regression on either numerical data, categorical data, or a combination
+of them. The Iris dataset categorical data of three different species of
+iris flowers, along with numerical data of the width and length of their
+petals and sepals.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;iris&quot;</span>)</span></code></pre></div>
+</div>
+<div id="using-the-function" class="section level2">
+<h2>Using the function</h2>
+<p>The function could be called directly from the package
+linearRegression, or from your environment once you attached the package
+to your active library.</p>
+<p>In the example below, we doing a linear regression on the iris data,
+where Sepal.Length is established as our response variable in the
+formula argument. ” Sepal.Length ~ . ” means that the regression is
+supposed to be done on all other variables in the dataset as explanatory
+variables.</p>
+<p>The regression is made and saved in your environment under whichever
+name you choose, here as “myModel”.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>myModel <span class="ot">&lt;-</span> </span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  linearRegression<span class="sc">::</span><span class="fu">linreg</span>(<span class="at">formula =</span> Sepal.Length <span class="sc">~</span> . ,<span class="at">data =</span>  iris)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co"># alternatively</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="fu">library</span>(linearRegression)</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>myModel <span class="ot">&lt;-</span> <span class="fu">linreg</span>(<span class="at">formula =</span> Sepal.Length <span class="sc">~</span> . ,<span class="at">data =</span> iris)</span></code></pre></div>
+<div id="choosing-explanatory-variables" class="section level3">
+<h3>Choosing explanatory variables</h3>
+<p>In the last example, we established the length of the iris sepals
+(Sepal.Length) as the variable that we want to explain through our
+regression. We could try to use the width (Sepal.Width) of the sepals as
+an explanatory variable.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>myFormula <span class="ot">&lt;-</span> Sepal.Length <span class="sc">~</span> Sepal.Width</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="fu">linreg</span>(<span class="at">formula =</span> myFormula, <span class="at">data =</span> iris)</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; linreg(formula = myFormula, data = iris)</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt;   (Intercept)  Sepal.Width</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt;      6.526223   -0.2233611</span></span></code></pre></div>
+<div id="adding-categorical-variables" class="section level4">
+<h4>Adding categorical variables</h4>
+<p>As our last model only explains the <strong>average</strong> iris
+flowers sepal length through its sepal width, we now also want to take
+the iris species into account.</p>
+<p>Species is therefore a categorical variable, which are stored in data
+frames wither in factor-class or character-class.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">class</span>(iris<span class="sc">$</span>Species)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt; [1] &quot;factor&quot;</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="fu">levels</span>(iris<span class="sc">$</span>Species)</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; [1] &quot;setosa&quot;     &quot;versicolor&quot; &quot;virginica&quot;</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>myFormula <span class="ot">&lt;-</span> Sepal.Length <span class="sc">~</span> Sepal.Width <span class="sc">+</span> Species</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="fu">linreg</span>(<span class="at">formula =</span> myFormula, <span class="at">data =</span> iris)</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt; linreg(formula = myFormula, data = iris)</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt;   (Intercept)  Sepal.Width  Speciesversicolor  Speciesvirginica</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt;      2.251393    0.8035609           1.458743          1.946817</span></span></code></pre></div>
+</div>
+<div id="transforming-variables" class="section level4">
+<h4>Transforming variables</h4>
+<p>In some more advanced cases of multiple regression, we could want to
+use polynomials or other functions to transform our variables.</p>
+<p>In the example below, we will tranform our Sepal.Width variable into
+a second degree polynomial, as well as adding the natural logarithm of
+petal length (Petal.Length).</p>
+<p>Although this could be done through calculating these transformed
+variables seperately, and then adding them to our dataset - It could as
+well be done in the formula directly using the I() function which tells
+the formula to read the argument as a transformation rather than a
+variable name.:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>myFormula <span class="ot">&lt;-</span> Sepal.Length <span class="sc">~</span> Sepal.Width <span class="sc">+</span> <span class="fu">I</span>(Sepal.Width<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(<span class="fu">log</span>(Petal.Width)) <span class="sc">+</span> Species</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="fu">linreg</span>(<span class="at">formula =</span> myFormula, <span class="at">data =</span> iris)</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; linreg(formula = myFormula, data = iris)</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt;   (Intercept)  Sepal.Width  I(Sepal.Width^2)  I(log(Petal.Width))</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt;      2.578423    0.8634888       -0.01845314            0.2108366</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt;   Speciesversicolor  Speciesvirginica</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt;             1.05196          1.459754</span></span></code></pre></div>
+</div>
+<div id="adding-interaction-terms" class="section level4">
+<h4>Adding interaction terms</h4>
+<p>Lastly, we could also add interaction terms between the variables. If
+we want to add the width of the petals (Petal.Width), as we suspect
+there being a significantly different relation between our response
+variable and the petal width depending on the species. An interaction
+term could be added alongside the variable. This is done through adding
+a “:” between the variables of which you suspect interaction.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>myFormula <span class="ot">&lt;-</span> Sepal.Length <span class="sc">~</span> Sepal.Width <span class="sc">+</span> <span class="fu">I</span>(Sepal.Width<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(<span class="fu">log</span>(Petal.Width)) <span class="sc">+</span> Petal.Width <span class="sc">+</span> Species <span class="sc">+</span> Petal.Width<span class="sc">:</span>Species</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>myModel <span class="ot">&lt;-</span> <span class="fu">linreg</span>(<span class="at">formula =</span> myFormula, <span class="at">data =</span> iris)</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>myModel</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt; linreg(formula = myFormula, data = iris)</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt;   (Intercept)  Sepal.Width  I(Sepal.Width^2)  I(log(Petal.Width))  Petal.Width</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt;      4.614665   0.08406808        0.09384361            0.4531982    -1.382108</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt;   Speciesversicolor  Speciesvirginica  Petal.Width:Speciesversicolor</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt;          -0.3530218         0.5334224                       1.826748</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt;   Petal.Width:Speciesvirginica</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">#&gt;                        1.39916</span></span></code></pre></div>
+</div>
+</div>
+<div id="evaluating-your-model" class="section level3">
+<h3>Evaluating your model</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>myModel<span class="sc">$</span><span class="fu">summary</span>()</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt;                                   Estimate  Std. Error      t value    Pr(&gt;|t|)</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt; (Intercept)                     4.61466511   2.0370983   2.26531288  0.02501746</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; Sepal.Width                     0.08406808   0.9269431   0.09069389  0.92786453</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt; I(Sepal.Width^2)                0.09384361   0.1448909   0.64768443  0.51824228</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt; I(log(Petal.Width))             0.45319819   0.5454180   0.83091901  0.40742421</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; Petal.Width                    -1.38210770   2.1253656  -0.65029174  0.51656196</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt; Speciesversicolor              -0.35302178   1.0568763  -0.33402374  0.73885792</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt; Speciesvirginica                0.53342237   1.2520116   0.42605224  0.67071946</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt; Petal.Width:Speciesversicolor   1.82674809   1.7679736   1.03324397  0.30325869</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt; Petal.Width:Speciesvirginica    1.39916002   1.8770933   0.74538649  0.45727884</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt;                                 </span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt; (Intercept)                    *</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt; Sepal.Width                     </span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt; I(Sepal.Width^2)                </span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co">#&gt; I(log(Petal.Width))             </span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a><span class="co">#&gt; Petal.Width                     </span></span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a><span class="co">#&gt; Speciesversicolor               </span></span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a><span class="co">#&gt; Speciesvirginica                </span></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a><span class="co">#&gt; Petal.Width:Speciesversicolor   </span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a><span class="co">#&gt; Petal.Width:Speciesvirginica    </span></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a><span class="co">#&gt; Residual standard error: 0.436314 on 141 degrees of freedom</span></span></code></pre></div>
+<p>Using the function summary() at our model-object gives us following
+output: A table is printed containing the beta-coefficient estimates for
+every explanatory variable supplied in the input formula, along with its
+standard errors. A t-value for each explanatory variable estimate is
+included in the output, which is used to calculate the p-value
+(Pr(&gt;|t|)) for double sided t-test. Often p &lt; 0.05 indicates
+statistically significant effect.</p>
+<div id="residual-analysis" class="section level4">
+<h4>Residual analysis</h4>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>myModel<span class="sc">$</span><span class="fu">plot</span>()</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>Although the majority of residual analysis must be done manually, the
+function supplies two plots accessed easiest through the
+print()-function. This provides two graphs where the resduals are
+plotted after fitted value along the x-axis. A red line is drawn through
+the median residual of every fitted value, in case one fitted value
+corresponds with different residuals. The first (upper) plot shows the
+residuals (how much the fitted values differs from data input) on
+y-axis. The second (lower) plot shows the square root of the
+standardized residuals on y-axis.</p>
+</div>
+</div>
+<div id="linreg-as-a-class-object" class="section level3">
+<h3>Linreg as a class object</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="do">## linreg$new(formula, data) == linreg(formula, data)</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>myModel <span class="ot">&lt;-</span> linreg<span class="sc">$</span><span class="fu">new</span>(<span class="at">formula =</span> myFormula, <span class="at">data =</span> iris)</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="fu">class</span>(linreg)</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt; [1] &quot;refObjectGenerator&quot;</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt; attr(,&quot;package&quot;)</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt; [1] &quot;methods&quot;</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="fu">class</span>(myModel)</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co">#&gt; [1] &quot;linreg&quot;</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co">#&gt; attr(,&quot;package&quot;)</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co">#&gt; [1] &quot;linearRegression&quot;</span></span></code></pre></div>
+<p>The function which calculates the regression is contained in an
+object generator which creates and object of class “linreg”. In the
+creation of a new “linreg”, the input is used on the function. Not only
+are the basic results printed at the creation of the object, they are
+also saved inside the object to be accessed later at command.</p>
+<div id="methods-and-fields" class="section level4">
+<h4>Methods and fields</h4>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#beta coefficients</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>myModel<span class="sc">$</span>beta_hats</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt;                                  beta_hat</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt; (Intercept)                    4.61466511</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt; Sepal.Width                    0.08406808</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt; I(Sepal.Width^2)               0.09384361</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt; I(log(Petal.Width))            0.45319819</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co">#&gt; Petal.Width                   -1.38210770</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="co">#&gt; Speciesversicolor             -0.35302178</span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co">#&gt; Speciesvirginica               0.53342237</span></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="co">#&gt; Petal.Width:Speciesversicolor  1.82674809</span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="co">#&gt; Petal.Width:Speciesvirginica   1.39916002</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="co">#10 first residuals</span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="fu">head</span>(myModel<span class="sc">$</span><span class="fu">resid</span>(), <span class="dv">10</span>)</span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="co">#&gt;          residuals</span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="co">#&gt;  [1,]  0.047328310</span></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a><span class="co">#&gt;  [2,]  0.194354073</span></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a><span class="co">#&gt;  [3,] -0.138825616</span></span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a><span class="co">#&gt;  [4,] -0.171297335</span></span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a><span class="co">#&gt;  [5,] -0.127707459</span></span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a><span class="co">#&gt;  [6,] -0.001787507</span></span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a><span class="co">#&gt;  [7,] -0.425058076</span></span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a><span class="co">#&gt;  [8,]  0.020487207</span></span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a><span class="co">#&gt;  [9,] -0.241871391</span></span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a><span class="co">#&gt; [10,]  0.304624943</span></span></code></pre></div>
+<div id="methods" class="section level5">
+<h5>Methods</h5>
+<ul>
+<li><p>Print coefficients -&gt; linreg_mod$print()</p></li>
+<li><p>Print summary of linear regression -&gt;
+linreg_mod$summary()</p></li>
+<li><p>Plot some basic graphs -&gt; linreg_mod$plot()</p></li>
+<li><p>Get residuals -&gt; linreg_mod$resid()</p></li>
+<li><p>Get y-hat values -&gt; linreg_mod$pred()</p></li>
+<li><p>Get coefficients -&gt; linreg_mod$coef()</p></li>
+</ul>
+</div>
+<div id="fields" class="section level5">
+<h5>Fields</h5>
+<ul>
+<li><p>formula = An R formula describing the desired formula for the
+linear regression</p></li>
+<li><p>data = A data.frame containing the necessary data for the linear
+regression</p></li>
+<li><p>beta_hat = A matrix with the estimated coefficients</p></li>
+<li><p>y_hat = A matrix with the predicted values for y</p></li>
+<li><p>res = A matrix with the residuals</p></li>
+<li><p>df = Degrees of freedom</p></li>
+<li><p>res_var = Variance of the residuals</p></li>
+<li><p>var_beta_hats = Variance of the estimated coefficients</p></li>
+<li><p>t_beta_hats = A matrix of t-values for the estimated
+coefficients</p></li>
+<li><p>p_beta_hats = A matrix of p-values for the estimated coefficients
+(t-test)</p></li>
+<li><p>formula_call = The formula as used in the object
+initialization</p></li>
+<li><p>data_call = The data as used in the object
+initialization</p></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="how-does-it-work" class="section level3">
+<h3>How does it work?</h3>
+<p>Linreg utilizes ordinary least squares-method to calculate regression
+coefficients through matrix algebra.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>                        formula <span class="ot">&lt;-</span> myFormula</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>                        data <span class="ot">&lt;-</span> iris</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>                        formula_call <span class="ot">&lt;-</span> <span class="fu">deparse</span>(<span class="fu">substitute</span>(formula))</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>                        data_call <span class="ot">&lt;-</span> <span class="fu">deparse</span>(<span class="fu">substitute</span>(data))</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>                        </span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>                        X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(formula, data) <span class="co"># https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/model.matrix</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>                        y <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(data[<span class="fu">all.vars</span>(formula)[<span class="dv">1</span>]])</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>                        </span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>                        beta_hats <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> X) <span class="sc">%*%</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> y</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>                        y_hat <span class="ot">&lt;-</span> X <span class="sc">%*%</span> beta_hats</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>                        res <span class="ot">&lt;-</span> y <span class="sc">-</span> y_hat</span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>                        df <span class="ot">&lt;-</span> <span class="fu">length</span>(y) <span class="sc">-</span> <span class="fu">length</span>(beta_hats)</span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>                        res_var <span class="ot">&lt;-</span> ((<span class="fu">t</span>(res) <span class="sc">%*%</span> res) <span class="sc">/</span> df)[<span class="dv">1</span>] <span class="co"># [1] to access the value</span></span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>                        var_beta_hats <span class="ot">&lt;-</span> <span class="fu">diag</span>(res_var <span class="sc">*</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> X))</span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>                        t_beta_hats <span class="ot">&lt;-</span> beta_hats <span class="sc">/</span> <span class="fu">sqrt</span>(var_beta_hats)</span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>                        p_beta_hats <span class="ot">&lt;-</span> <span class="fu">pt</span>(<span class="fu">abs</span>(t_beta_hats), df, <span class="at">lower.tail=</span><span class="cn">FALSE</span>)<span class="sc">*</span><span class="dv">2</span> <span class="co"># x2 for two-tailed p-values</span></span></code></pre></div>
+</div>
+<div id="custom-theme-liu" class="section level3">
+<h3>Custom theme: LiU</h3>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># Plot the residuals with a theme matching the graphic profile of Linköpings University!</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>myModel<span class="sc">$</span><span class="fu">plot</span>(<span class="at">theme =</span> <span class="st">&quot;liu&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

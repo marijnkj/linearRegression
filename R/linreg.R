@@ -23,10 +23,9 @@
 #' @field data_call The data as used in the object initialization
 #' 
 #' @importFrom ggplot2 ggplot geom_point geom_line aes ggtitle ylab xlab theme_classic theme element_text margin element_blank element_rect
-#' @importFrom dplyr group_by summarise mutate
+#' @importFrom dplyr group_by summarise mutate %>%
 #' @importFrom gridExtra grid.arrange
 #' @importFrom methods new
-#' @importFrom patchwork inset_element
 # #' @importFrom magick image_read
 # #' @importFrom patchwork inset_element
 #' @export linreg
@@ -220,8 +219,8 @@ linreg$methods(plot = function(theme="liu") {
   grid.arrange(p_fit_res, p_fit_std_res, nrow=2) # http://www.sthda.com/english/wiki/wiki.php?id_contents=7930
 })
 
-data(iris)
-linreg_mod <- linreg(formula=Petal.Length ~ Species, data=iris)
+#data(iris)
+#linreg_mod <- linreg(formula=Petal.Length ~ Species, data=iris)
 # linreg_mod$summary()
 # linreg_mod$print()
-linreg_mod$plot()
+#linreg_mod$plot()
