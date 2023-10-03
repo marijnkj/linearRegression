@@ -107,7 +107,7 @@ myModel
 ### Evaluating your model
 
 ```{r}
-summary(myModel)
+myModel$summary()
 
 ```
 
@@ -116,7 +116,7 @@ Using the function summary() at our model-object gives us following output: A ta
 #### Residual analysis
 
 ```{r}
-plot(myModel)
+myModel$plot()
 
 ```
 
