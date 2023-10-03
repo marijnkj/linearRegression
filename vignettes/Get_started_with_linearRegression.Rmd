@@ -1,8 +1,8 @@
 ---
-title: "Get started with linearRegression"
+title: "Get_started_with_linearRegression"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{my-vignette}
+  %\VignetteIndexEntry{Get_started_with_linearRegression}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -19,7 +19,6 @@ knitr::opts_chunk$set(
 linearPackage introduces a way of solving (multiple) linear regression on either numerical data, categorical data, or a combination of them. The Iris dataset categorical data of three different species of iris flowers, along with numerical data of the width and length of their petals and sepals.
 
 ```{r setup}
-
 data("iris")
 ```
 
