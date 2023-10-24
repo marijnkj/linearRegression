@@ -1,7 +1,3 @@
-# TODO
-# - Write vignette
-# - Create theme
-
 #' Linear Regression by OLS
 #' 
 #' The linreg class runs a linear regression by OLS on a given formula and dataset. 
@@ -22,6 +18,7 @@
 #' @field formula_call The formula as used in the object initialization
 #' @field data_call The data as used in the object initialization
 #' 
+#' @importFrom stats model.matrix
 #' @importFrom ggplot2 ggplot geom_point geom_line aes ggtitle ylab xlab theme_classic theme element_text margin element_blank element_rect
 #' @importFrom dplyr group_by summarise mutate %>%
 #' @importFrom gridExtra grid.arrange

@@ -1,0 +1,44 @@
+---
+title: "ridgereg"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ridgereg}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(linearRegression)
+library(caret)
+library(mlbench)
+```
+
+
+```{r}
+data(BostonHousing)
+
+# Get indeces of rows to include in training set
+train_index <- caret::createDataPartition(BostonHousing$medv, p=0.6, list=FALSE, times=1)
+
+# Create train and test data
+train_data <- BostonHousing[train_index,]
+test_data <- BostonHousing[-train_index,]
+
+lm <- train(medv ~ ., data=train_data, method="lm")
+lm_forward <- train(medv ~ ., data=train_data, method="leapForward")
+
+lm_pred <- predict(lm, test_data)
+lm_forward_pred <- predict(lm_forward, test_data)
+
+postResample(lm_pred, test_data$medv)
+postResample(lm_forward_pred, test_data$medv)
+
+ridgereg(medv ~ ., data=train_data, lambda=1, scale=TRUE)
+```
