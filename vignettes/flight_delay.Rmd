@@ -1,0 +1,40 @@
+---
+title: "flight_delay"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{flight_delay}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(linearRegression)
+library(dplyr)
+library(nycflights13)
+```
+
+```{r}
+data(weather)
+data(flights)
+
+flights <- flights[complete.cases(flights$arr_delay),]
+data <- inner_join(weather, flights, by=c("origin", "time_hour"))
+
+data <- data[, !names(data) %in% c("year.x", "year.y", "month.x", "month.y", "day.x", "day.y", "hour.x", "hour.y", "dep_time", "sched_dep_time", "dep_delay", "arr_time", "sched_arr_time", "carrier", "flight", "tailnum", "dest", "distance", "hour", "minute", "dewp", "wind_gust", "pressure", "time_hour", "origin")]
+
+train_index <- caret::createDataPartition(data$arr_delay, p=0.8, list=FALSE, times=1)
+test_index <- caret::createDataPartition(data$arr_delay[-train_index], p=0.25, list=FALSE, times=1)
+
+train_data <- data[train_index,]
+test_data <- data[test_index,]
+val_data <- data[-append(train_index, test_index),]
+
+ridgereg(formula=arr_delay ~ ., data=train_data, lambda=0)
+```

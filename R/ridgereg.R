@@ -22,7 +22,9 @@ ridgereg <- setRefClass("ridgereg",
                                     beta_hats="matrix",
                                     y_hat="matrix",
                                     formula_call="character",
-                                    data_call="character"
+                                    data_call="character",
+                                    lambda_call="character",
+                                    scale_call="character"
                                     ),
                         methods=list(initialize=function(formula, data, lambda, scale=0) {
                           .self$formula <<- formula
@@ -30,6 +32,8 @@ ridgereg <- setRefClass("ridgereg",
                           .self$lambda <<- lambda
                           .self$formula_call <<- deparse(substitute(formula))
                           .self$data_call <<- deparse(substitute(data))
+                          .self$lambda_call <<- deparse(substitute(lambda))
+                          .self$scale_call <<- deparse(substitute(scale))
                           
                           y_var <- all.vars(formula)[[1]]
                           if (all.vars(formula)[2] == ".") {
@@ -51,7 +55,7 @@ ridgereg <- setRefClass("ridgereg",
                           }
                           
                           X <- model.matrix(formula, data_use)
-                          y <- as.matrix(data[, y_var, drop=FALSE])
+                          y <- as.matrix(data_use[rownames(X), y_var, drop=FALSE])
                           
                           .self$beta_hats <<- solve((t(X) %*% X + lambda * diag(dim(X)[2]))) %*% t(X) %*% y # https://www.geeksforgeeks.org/how-to-create-the-identity-matrix-in-r/
                           .self$y_hat <<- X %*% beta_hats
@@ -70,16 +74,7 @@ ridgereg$methods(show = function(){
   coef <- t(.self$beta_hats)
   dimnames(coef)[[1]] <- ""
   
-  cat("\nCall:\nridgereg(formula = ", .self$formula_call, ", data = ", .self$data_call, ")\n\n", 
-      "Coefficients:\n", sep="")
-  print.default(coef, print.gap=2L, quote=FALSE, right=TRUE)
-})
-
-ridgereg$methods(print = function(){
-  coef <- t(.self$beta_hats)
-  dimnames(coef)[[1]] <- ""
-  
-  cat("\nCall:\nridgereg(formula = ", .self$formula_call, ", data = ", .self$data_call, ")\n\n", 
+  cat("\nCall:\nridgereg(formula = ", .self$formula_call, ", data = ", .self$data_call, ", lambda = ", .self$lambda_call, ", scale = ", .self$scale_call, ")\n\n", 
       "Coefficients:\n", sep="")
   print.default(coef, print.gap=2L, quote=FALSE, right=TRUE)
 })

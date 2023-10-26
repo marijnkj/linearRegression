@@ -1,5 +1,3 @@
-context("linearRegression")
-
 data("iris")
 
 Polygon <- setRefClass("Polygon", fields = c("sides"))

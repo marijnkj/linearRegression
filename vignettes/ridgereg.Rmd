@@ -40,5 +40,5 @@ lm_forward_pred <- predict(lm_forward, test_data)
 postResample(lm_pred, test_data$medv)
 postResample(lm_forward_pred, test_data$medv)
 
-ridgereg(medv ~ ., data=train_data, lambda=1, scale=TRUE)
+ridgereg(medv ~ ., data=train_data, lambda=0, scale=TRUE)
 ```
