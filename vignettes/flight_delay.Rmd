@@ -26,11 +26,10 @@ library(nycflights13)
 data(weather)
 data(flights)
 
-flights <- flights[complete.cases(flights$arr_delay),]
 data <- inner_join(weather, flights, by=c("origin", "time_hour"))
-
 data <- data[, !names(data) %in% c("year.x", "year.y", "month.x", "month.y", "day.x", "day.y", "hour.x", "hour.y", "dep_time", "sched_dep_time", "dep_delay", "arr_time", "sched_arr_time", "carrier", "flight", "tailnum", "dest", "distance", "hour", "minute", "dewp", "wind_gust", "pressure", "time_hour", "origin")]
 
+data <- data[complete.cases(data),]
 train_index <- caret::createDataPartition(data$arr_delay, p=0.8, list=FALSE, times=1)
 test_index <- caret::createDataPartition(data$arr_delay[-train_index], p=0.25, list=FALSE, times=1)
 
@@ -39,13 +38,14 @@ test_data <- data[test_index,]
 val_data <- data[-append(train_index, test_index),]
 
 rmse <- function(error) {sqrt(mean(error^2))}
-
-df_res <- setNames(data.frame(matrix(ncol=2, nrow=2)), c("lambda", "rmse"))
-for (lambda in seq(0, 5, 0.1)) {
-  mod <- ridgereg(formula=arr_delay ~ ., data=train_data, lambda=lambda)
-  
-  df_res <- rbind(df_res, data.frame("lambda"=lambda, "rmse"=rmse(mod$res)))
+val_data[c(1, 2, 3, 4, 5, 6, 8)] <- scale(val_data[c(1, 2, 3, 4, 5, 6, 8)])
+df_res <- setNames(data.frame(matrix(ncol=2, nrow=0)), c("lambda", "rmse"))
+for (lambda in seq(0, 100, 1)) {
+  mod <- ridgereg(formula=arr_delay ~ ., data=train_data, lambda=lambda, scale=TRUE)
+  pred <- as.matrix(cbind(1, val_data[, !(names(val_data) %in% "arr_delay")])) %*% mod$coef()
+  res <- as.matrix(val_data[, "arr_delay"]) - pred
+  df_res <- rbind(df_res, data.frame("lambda"=lambda, "rmse"=rmse(res)))
 }
 
-
+df_res
 ```
