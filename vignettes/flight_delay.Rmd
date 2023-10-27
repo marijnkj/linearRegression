@@ -14,12 +14,14 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Libraries
 ```{r setup}
 library(linearRegression)
 library(dplyr)
 library(nycflights13)
 ```
 
+# Analysis
 ```{r}
 data(weather)
 data(flights)
@@ -36,5 +38,14 @@ train_data <- data[train_index,]
 test_data <- data[test_index,]
 val_data <- data[-append(train_index, test_index),]
 
-ridgereg(formula=arr_delay ~ ., data=train_data, lambda=0)
+rmse <- function(error) {sqrt(mean(error^2))}
+
+df_res <- setNames(data.frame(matrix(ncol=2, nrow=2)), c("lambda", "rmse"))
+for (lambda in seq(0, 5, 0.1)) {
+  mod <- ridgereg(formula=arr_delay ~ ., data=train_data, lambda=lambda)
+  
+  df_res <- rbind(df_res, data.frame("lambda"=lambda, "rmse"=rmse(mod$res)))
+}
+
+
 ```

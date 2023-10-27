@@ -21,6 +21,7 @@ ridgereg <- setRefClass("ridgereg",
                                     scale="logical",
                                     beta_hats="matrix",
                                     y_hat="matrix",
+                                    res="matrix",
                                     formula_call="character",
                                     data_call="character",
                                     lambda_call="character",
@@ -58,7 +59,8 @@ ridgereg <- setRefClass("ridgereg",
                           y <- as.matrix(data_use[rownames(X), y_var, drop=FALSE])
                           
                           .self$beta_hats <<- solve((t(X) %*% X + lambda * diag(dim(X)[2]))) %*% t(X) %*% y # https://www.geeksforgeeks.org/how-to-create-the-identity-matrix-in-r/
-                          .self$y_hat <<- X %*% beta_hats
+                          .self$y_hat <<- X %*% .self$beta_hats
+                          .self$res <<- y - .self$y_hat
                           
                           colnames(.self$beta_hats) <<- "beta_hat"
                           colnames(.self$y_hat) <<- "y_hat"
