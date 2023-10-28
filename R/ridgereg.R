@@ -67,7 +67,32 @@ ridgereg <- setRefClass("ridgereg",
                           
                           .self
                         },
-                        predict=function() {.self$y_hat},
+                        predict=function(newdata) {
+                            
+                          y_var <- all.vars(formula)[[1]]
+                            
+                            if (all.vars(formula)[2] == ".") {
+                              X_var <- names(newdata[, !names(newdata) %in% y_var])
+                            }
+                            else {
+                              X_var <- all.vars(formula)[2:length(all.vars(formula))] # https://stackoverflow.com/questions/18017765/extract-variables-in-formula-from-a-data-frame
+                            }
+                          
+                            if (.self$scale_call) {
+                              X_norm <- as.data.frame(lapply(newdata[, X_var], FUN=function(x) {
+                                if (is.numeric(x)) {(x - mean(x)) / sqrt(var(x))}
+                                else {x}
+                              }))
+                              data_use <- cbind(newdata[, y_var, drop=FALSE], X_norm) # https://stackoverflow.com/questions/29325688/keep-column-name-when-select-one-column-from-a-data-frame-matrix-in-r
+                            }
+                            else {
+                              data_use <- newdata
+                            }
+                            
+                            X <- model.matrix(formula, data_use)
+                            return(X %*% .self$beta_hats)
+                          
+                          },
                         coef=function() {.self$beta_hats}
                         )
 )
@@ -80,3 +105,5 @@ ridgereg$methods(show = function(){
       "Coefficients:\n", sep="")
   print.default(coef, print.gap=2L, quote=FALSE, right=TRUE)
 })
+
+
