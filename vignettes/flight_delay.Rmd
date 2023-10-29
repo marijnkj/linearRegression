@@ -23,12 +23,15 @@ library(nycflights13)
 
 # Analysis
 ```{r}
+# Load in datasets
 data(weather)
 data(flights)
 
+# Join data on origin airport and time of flight, and remove unnecessary columns
 data <- inner_join(weather, flights, by=c("origin", "time_hour"))
 data <- data[, !names(data) %in% c("year.x", "year.y", "month.x", "month.y", "day.x", "day.y", "hour.x", "hour.y", "dep_time", "sched_dep_time", "dep_delay", "arr_time", "sched_arr_time", "carrier", "flight", "tailnum", "dest", "distance", "hour", "minute", "dewp", "wind_gust", "pressure", "time_hour", "origin")]
 
+# Partition data 80% train, 15% validate, 5% test
 data <- data[complete.cases(data),]
 train_index <- caret::createDataPartition(data$arr_delay, p=0.8, list=FALSE, times=1)
 test_index <- caret::createDataPartition(data$arr_delay[-train_index], p=0.25, list=FALSE, times=1)
@@ -37,16 +40,29 @@ train_data <- data[train_index,]
 test_data <- data[test_index,]
 val_data <- data[-append(train_index, test_index),]
 
-calc_rmse <- function(error) {sqrt(mean(error^2))}
+# Scale X columns on validate and test data sets
 val_data[c(1, 2, 3, 4, 5, 6, 8)] <- scale(val_data[c(1, 2, 3, 4, 5, 6, 8)])
+test_data[c(1, 2, 3, 4, 5, 6, 8)] <- scale(test_data[c(1, 2, 3, 4, 5, 6, 8)])
+
+# Function to calculate RMSE
+rmse <- function(error) {sqrt(mean(error^2))}
+
+# Loop over several lambda values and record RMSE on validate set
 df_res <- setNames(data.frame(matrix(ncol=2, nrow=0)), c("lambda", "rmse"))
-for (lambda in seq(0, 100000, 10000)) {
+for (lambda in seq(0, 1, 0.01)) {
   mod <- ridgereg(formula=arr_delay ~ ., data=train_data, lambda=lambda, scale=TRUE)
   pred <- as.matrix(cbind(1, val_data[, !(names(val_data) %in% "arr_delay")])) %*% mod$coef()
   res <- as.matrix(val_data[, "arr_delay"]- pred) 
-  print(calc_rmse(res))
+  print(rmse(res))
   df_res <- rbind(df_res, data.frame("lambda"=lambda, "rmse"=rmse(res)))
 }
 
-df_res
+# Find optimal lambda, and report RMSE on test data
+opt_lambda <- df_res[df_res$rmse == min(df_res$rmse), "lambda"]
+
+mod <- ridgereg(formula=arr_delay ~ ., data=train_data, lambda=opt_lambda, scale=TRUE)
+pred <- as.matrix(cbind(1, test_data[, !(names(test_data) %in% "arr_delay")])) %*% mod$coef()
+res <- as.matrix(test_data[, "arr_delay"]- pred) 
+  
+paste0("RMSE test: ", rmse(mod$res))
 ```
