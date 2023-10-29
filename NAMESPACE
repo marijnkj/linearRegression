@@ -2,6 +2,7 @@
 
 export(linreg)
 export(ridgereg)
+export(train_forward)
 export(visualize_airport_delays)
 import(nycflights13)
 importFrom(dplyr,"%>%")

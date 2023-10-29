@@ -1,3 +1,22 @@
+#' Custom forward-selection
+#' 
+#' 
+#' 
+#'
+#' 
+#' @export train_forward
+#' 
+#'
+#' @field y The response variable
+#' @field data A data.frame containing the necessary data for the linear regression, including response variable
+#'
+#'
+#'
+#'
+
+# https://en.wikipedia.org/wiki/Stepwise_regression
+# Doing selection with Akaike information criterion
+
 train_forward <- function(y, data){
   available_variables <- colnames(data)
   available_variables <- available_variables[available_variables != y]

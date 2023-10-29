@@ -13,6 +13,7 @@
 #' @importFrom stats model.matrix
 #' 
 #' @export ridgereg
+#' @export print.ridgereg
 
 ridgereg <- setRefClass("ridgereg",
                         fields=list(formula="formula",
@@ -67,30 +68,33 @@ ridgereg <- setRefClass("ridgereg",
                           
                           .self
                         },
-                        predict=function(newdata) {
+                        predict=function(model = .self ,newdata) {
+                          
+                          #.self as default
                             
-                          y_var <- all.vars(formula)[[1]]
                             
-                            if (all.vars(formula)[2] == ".") {
-                              X_var <- names(newdata[, !names(newdata) %in% y_var])
-                            }
-                            else {
-                              X_var <- all.vars(formula)[2:length(all.vars(formula))] # https://stackoverflow.com/questions/18017765/extract-variables-in-formula-from-a-data-frame
+                            if(all.vars(model$formula)[2] == "."){
+                              X_var <- colnames(newdata)[!(colnames(newdata) %in% all.vars(model$formula)[1])]
+                            }else{
+                              X_var <- all.vars(model$formula)[2:length(all.vars(model$formula))] # https://stackoverflow.com/questions/18017765/extract-variables-in-formula-from-a-data-frame
                             }
                           
-                            if (.self$scale_call) {
+                            if (model$scale_call == "TRUE") {
                               X_norm <- as.data.frame(lapply(newdata[, X_var], FUN=function(x) {
                                 if (is.numeric(x)) {(x - mean(x)) / sqrt(var(x))}
                                 else {x}
                               }))
-                              data_use <- cbind(newdata[, y_var, drop=FALSE], X_norm) # https://stackoverflow.com/questions/29325688/keep-column-name-when-select-one-column-from-a-data-frame-matrix-in-r
-                            }
-                            else {
+                              data_use <-  X_norm # https://stackoverflow.com/questions/29325688/keep-column-name-when-select-one-column-from-a-data-frame-matrix-in-r
+                            }else{
                               data_use <- newdata
                             }
                             
-                            X <- model.matrix(formula, data_use)
-                            return(X %*% .self$beta_hats)
+                            
+                            X <- model.matrix(as.formula(paste0("y ~ ",paste0(X_var, collapse = "+"))), cbind(y = 1,data_use))
+                            #prediction
+                            output <- X %*% model$beta_hats
+                            colnames(output) <- "y_hat"
+                            return(output)
                           
                           },
                         coef=function() {.self$beta_hats}
@@ -106,4 +110,8 @@ ridgereg$methods(show = function(){
   print.default(coef, print.gap=2L, quote=FALSE, right=TRUE)
 })
 
+
+predict.ridgereg <- function(model, newdata){
+  ridgereg$methods("predict")(model ,newdata)
+}
 

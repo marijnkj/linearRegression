@@ -21,13 +21,50 @@ library(mlbench)
 library(leaps)
 ```
 
+## Setting up caret-stylized optimization functions
+
+Inspired by similar algorithms, mostly lm() and "leapForward" from leaps-package, caret-stylized functions are extracted through getModelInfo(). RidgeReg is a list containing the information and functions needed for the caret::train()-function.
+
 ```{r}
-RidgeReg <- list(library=linearRegression, type = "Regression", parameters = "lambda", fit = ridgereg, 
-                 predict = pred)
+RidgeReg <- list(library="linearRegression", type = "Regression", sort = NULL, prob = NULL)
+
+RidgeReg$parameters <- data.frame(parameter = "lambda", class = "numeric", label = "lambda")
+
+RidgeReg$grid <- function(x,y,len = 2,search = "grid"){
+  startingpoints <- data.frame(lambda = (10^(1:len))/1000000)
+  out <- c()
+  for(i in unlist(startingpoints)){
+    out <- append(out, seq(i/10,i,i/10))
+  }
+  return(data.frame(lambda = unlist(out)))
+}
+
+RidgeReg$fit <- function(x, y, wts, param, lev, last, classProbs, ...){
+  dat <- if (is.data.frame(x)) 
+        x
+    else as.data.frame(x, stringsAsFactors = TRUE)
+    dat$.outcome <- y
+  ridgereg(.outcome ~ ., data = dat, lambda = param$lambda)
+}
+
+RidgeReg$predict <- function (modelFit, newdata, submodels = NULL){
+    if (!is.data.frame(newdata)) 
+        newdata <- as.data.frame(newdata, stringsAsFactors = TRUE)
+    predict(modelFit, newdata)
+}
+
+
+
 ```
+
+## Data partition
+
+The BostonHousing-dataset is used and partitioned into a training set and a test set.
 
 ```{r}
 data(BostonHousing)
+
+set.seed(1)
 
 # Get indeces of rows to include in training set
 train_index <- caret::createDataPartition(BostonHousing$medv, p=0.6, list=FALSE, times=1)
@@ -36,14 +73,51 @@ train_index <- caret::createDataPartition(BostonHousing$medv, p=0.6, list=FALSE,
 train_data <- BostonHousing[train_index,]
 test_data <- BostonHousing[-train_index,]
 
-lm <- train(medv ~ ., data=train_data, method="lm")
-lm_forward <- train_forward("medv", data)
+```
 
-lm_pred <- predict(lm, test_data)
+## Forward selection
+
+Using the custom made function train_forward, the optimal set of parameters are adopted from a forward-selection-algorithm using Akaike Information Criterion. The printed output shows us that the criterion (which is evaluated through a less-is-better-logic) is improved until 11/13 are used. This means that the optimal set of parameters are every one except "indus" and "age".
+
+```{r}
+lm_forward <- train_forward("medv", train_data)
+lm_forward$output
+lm_forward$best_model
+
+```
+
+## Ridge Regression
+
+Using the previously presented caret-stylized functions, the train-function is now used to evaluate the optimal lambda value. Evaluation through RMSE shows us that lambda = 0.2 generates the lowest (best) among the values tested.
+
+```{r}
+lm_ridge <-  train(medv ~ . , data = train_data, scale = TRUE, method = RidgeReg, tuneLength = 10)
+lm_ridge$results
+lm_ridge$bestTune
+```
+
+## Ridge Regression 10-fold
+
+Using the same functions for Ridge-regression, but now trained through a 10-fold learning algorithm. Lambda = 0.1 generates the best result as it has the lowest RMSE.
+
+```{r}
+ctrl <- trainControl(method = "repeatedcv", repeats = 10)
+lm_ridge_10fold <-  train(medv ~ . , data = train_data, scale = TRUE, method = RidgeReg, tuneLength = 10, trControl = ctrl)
+lm_ridge_10fold$results
+lm_ridge_10fold$bestTune
+```
+
+## Evaluation
+
+Using the current seed, the lowest RMSE are produced by using the ridge-regression alternatives. The 10-fold-training did produce a slightly higher RMSE, but giving the small margin, this
+
+```{r}
 lm_forward_pred <- predict(lm_forward$best_model, test_data)
+lm_ridge_pred <- predict(ridgereg(medv ~ . , data = train_data, scale = TRUE, lambda = lm_ridge$bestTune$lambda),test_data)
+lm_ridge_pred_10fold <- predict(ridgereg(medv ~ . , data = train_data, scale = TRUE, lambda =
+                                           lm_ridge_10fold$bestTune$lambda),test_data)
 
-postResample(lm_pred, test_data$medv)
 postResample(lm_forward_pred, test_data$medv)
-
-ridgereg(medv ~ ., data=train_data, lambda=0, scale=TRUE)
+postResample(lm_ridge_pred, test_data$medv)
+postResample(lm_ridge_pred_10fold, test_data$medv)
 ```
