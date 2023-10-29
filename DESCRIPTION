@@ -14,7 +14,8 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     caret,
-    mlbench
+    mlbench,
+    leaps
 Exports: linreg
 Config/testthat/edition: 3
 RoxygenNote: 7.2.3
