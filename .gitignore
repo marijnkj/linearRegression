@@ -5,3 +5,5 @@
 *.Rproj
 .pdf
 inst/doc
+/doc/
+/Meta/

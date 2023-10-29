@@ -13,6 +13,7 @@
 #' @importFrom stats model.matrix
 #' 
 #' @export ridgereg
+#' @export ridgereg
 
 ridgereg <- setRefClass("ridgereg",
                         fields=list(formula="formula",
@@ -100,7 +101,7 @@ ridgereg <- setRefClass("ridgereg",
                         )
 )
 
-#' @export
+
 ridgereg$methods(show = function(){
   coef <- t(.self$beta_hats)
   dimnames(coef)[[1]] <- ""
@@ -119,7 +120,7 @@ ridgereg$methods(print = function(){
   print.default(coef, print.gap=2L, quote=FALSE, right=TRUE)
 })
 
-
+#' @export
 predict.ridgereg <- function(model, newdata){
   ridgereg$methods("predict")(model ,newdata)
 }
