@@ -15,10 +15,10 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(linearRegression)
 library(caret)
 library(mlbench)
 library(leaps)
+library(linearRegression)
 ```
 
 ## Setting up caret-stylized optimization functions
@@ -50,7 +50,7 @@ RidgeReg$fit <- function(x, y, wts, param, lev, last, classProbs, ...){
 RidgeReg$predict <- function (modelFit, newdata, submodels = NULL){
     if (!is.data.frame(newdata)) 
         newdata <- as.data.frame(newdata, stringsAsFactors = TRUE)
-    modelFit$predict(newdata)
+    modelFit$predict(modelFit ,newdata)
 }
 
 

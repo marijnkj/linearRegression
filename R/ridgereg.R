@@ -100,6 +100,7 @@ ridgereg <- setRefClass("ridgereg",
                         )
 )
 
+#' @export
 ridgereg$methods(show = function(){
   coef <- t(.self$beta_hats)
   dimnames(coef)[[1]] <- ""
