@@ -109,7 +109,7 @@ lm_ridge_10fold$bestTune
 
 ## Evaluation
 
-Using the current seed, the lowest RMSE are produced by using the ridge-regression alternatives. The 10-fold-training did produce a slightly higher RMSE, but giving the small margin, this
+Using the current seed, the lowest RMSE are produced by using the ridge-regression alternatives. The 10-fold-training did produce a slightly higher RMSE, but giving the small margin, this could as well be randomness. Even finer grid search or a random search could perhaps result in a more conclusive difference.
 
 ```{r}
 lm_forward_pred <- predict(lm_forward$best_model, test_data)

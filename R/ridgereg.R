@@ -13,7 +13,6 @@
 #' @importFrom stats model.matrix
 #' 
 #' @export ridgereg
-#' @export print.ridgereg
 
 ridgereg <- setRefClass("ridgereg",
                         fields=list(formula="formula",
@@ -68,7 +67,7 @@ ridgereg <- setRefClass("ridgereg",
                           
                           .self
                         },
-                        predict=function(model = .self ,newdata) {
+                        predict=function(model = .self , newdata = .self$data) {
                           
                           #.self as default
                             
@@ -102,6 +101,15 @@ ridgereg <- setRefClass("ridgereg",
 )
 
 ridgereg$methods(show = function(){
+  coef <- t(.self$beta_hats)
+  dimnames(coef)[[1]] <- ""
+  
+  cat("\nCall:\nridgereg(formula = ", .self$formula_call, ", data = ", .self$data_call, ", lambda = ", .self$lambda_call, ", scale = ", .self$scale_call, ")\n\n", 
+      "Coefficients:\n", sep="")
+  print.default(coef, print.gap=2L, quote=FALSE, right=TRUE)
+})
+
+ridgereg$methods(print = function(){
   coef <- t(.self$beta_hats)
   dimnames(coef)[[1]] <- ""
   
