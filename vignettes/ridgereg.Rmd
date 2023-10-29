@@ -1,4 +1,4 @@
----
+?---
 title: "ridgereg"
 output: rmarkdown::html_vignette
 vignette: >
@@ -50,7 +50,7 @@ RidgeReg$fit <- function(x, y, wts, param, lev, last, classProbs, ...){
 RidgeReg$predict <- function (modelFit, newdata, submodels = NULL){
     if (!is.data.frame(newdata)) 
         newdata <- as.data.frame(newdata, stringsAsFactors = TRUE)
-    predict(modelFit, newdata)
+    modelFit$predict(newdata)
 }
 
 
@@ -66,9 +66,8 @@ data(BostonHousing)
 
 set.seed(1)
 
-# Get indeces of rows to include in training set
-train_index <- caret::createDataPartition(BostonHousing$medv, p=0.6, list=FALSE, times=1)
-
+# Get indices of rows to include in training set
+train_index <- caret::createDataPartition(y = BostonHousing$medv, p=0.6, list=FALSE, times=1)
 # Create train and test data
 train_data <- BostonHousing[train_index,]
 test_data <- BostonHousing[-train_index,]
@@ -80,7 +79,7 @@ test_data <- BostonHousing[-train_index,]
 Using the custom made function train_forward, the optimal set of parameters are adopted from a forward-selection-algorithm using Akaike Information Criterion. The printed output shows us that the criterion (which is evaluated through a less-is-better-logic) is improved until 11/13 are used. This means that the optimal set of parameters are every one except "indus" and "age".
 
 ```{r}
-lm_forward <- train_forward("medv", train_data)
+lm_forward <- train_forward(y = "medv", data = train_data)
 lm_forward$output
 lm_forward$best_model
 
